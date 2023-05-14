@@ -29,7 +29,8 @@ repositories {
     maven {
         name = "GitHubPackages"
         // TODO update with repository identifier
-        url = uri("https://maven.pkg.github.com/EIDU/personalization-plugin-starter")
+        // url = uri("https://maven.pkg.github.com/EIDU/personalization-plugin-starter")
+        url = uri("https://maven.pkg.github.com/lazar-eidu/EGBinary")
         credentials {
             username = System.getenv("GITHUB_READPACKAGES_USER")
                 ?: localProperties.getProperty("githubReadPackagesUser")
@@ -47,7 +48,7 @@ java {
 dependencies {
     // Normally, compileOnly would be enough, because we don't need to package this library in our JAR. However,
     // that would cause Proguard to remove some references to the classes it can't find.
-    implementation("com.eidu:personalization-plugin-interface:1.0.24")
+    implementation("com.eidu:personalization-plugin-interface:1.1.0")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("io.mockk", "mockk", "1.12.4")
