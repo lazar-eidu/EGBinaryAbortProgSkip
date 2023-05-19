@@ -26,7 +26,7 @@ class ExpectedGainPersonalizationPluginTest {
     }
 
     @Test
-    fun `returns empty list if all processed units have a probability of success of over 90 percent`() {
+    fun `returns empty list if all processed units have a probability of success of over threshold value`() {
         val pluginOutput = plugin.determineNextUnits(
             PersonalizationInput(
                 listOf(),
@@ -35,10 +35,10 @@ class ExpectedGainPersonalizationPluginTest {
         ) { _, _, output ->
             `given plugin probability values`(
                 output,
-                FIRST_UNIT to 0.95f,
-                SECOND_UNIT to 0.95f,
-                THIRD_UNIT to 0.95f,
-                FOURTH_UNIT to 0.95f,
+                FIRST_UNIT to 0.98f,
+                SECOND_UNIT to 0.98f,
+                THIRD_UNIT to 0.98f,
+                FOURTH_UNIT to 0.98f,
             )
         }
 
@@ -55,7 +55,7 @@ class ExpectedGainPersonalizationPluginTest {
         ) { _, _, output ->
             `given plugin probability values`(
                 output,
-                FIRST_UNIT to 0.8f
+                FIRST_UNIT to 0.98f
             )
         }
 
