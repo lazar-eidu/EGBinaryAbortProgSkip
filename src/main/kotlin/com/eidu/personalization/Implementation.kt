@@ -13,6 +13,7 @@ class Implementation : PersonalizationPlugin {
     private val contentIdMapping = ContentIdMapping.readContentIdMapping()
     private val inputProcessor = InputProcessor(contentIdMapping)
     private val outputProcessor = OutputProcessor(contentIdMapping)
+    private val thresholdMapping = contentIdMapping.associateBy({ it.contentId }) { it.threshold }
 
     override fun determineNextUnits(
         input: PersonalizationInput,
@@ -24,12 +25,14 @@ class Implementation : PersonalizationPlugin {
         )
         val initialInference = runInference(sanitizedInput, runTensorflowInference)
 
-        val minimumProbabilityOfSuccess = initialInference.minOfOrNull { it.value } ?: 0f
-        if (minimumProbabilityOfSuccess > PROBABILITY_OF_SUCCESS_THRESHOLD) return PersonalizationOutput(
-            listOf(),
-            initialInference
-        )
+        val filteredInference = initialInference.filter {
+            it.value < (thresholdMapping[it.key] ?: 1f)
+        }
 
+        if (filteredInference.isEmpty()) return PersonalizationOutput(
+            listOf(),
+            filteredInference
+        )
         val simulatedInferences = initialInference.keys.map { contentId ->
             val simulatedHistory =
                 sanitizedInput.learningHistory + UnitResult(contentId, UnitResultType.Success, 0L, null)
@@ -50,7 +53,11 @@ class Implementation : PersonalizationPlugin {
 
     private fun filterAvailableUnits(input: PersonalizationInput) =
         input.availableUnits.filter { unit ->
-            !input.learningHistory.any { it.unitId == unit && it.resultType == UnitResultType.Success }
+            !input.learningHistory.any {
+                it.unitId == unit &&
+                    it.resultType == UnitResultType.Success &&
+                    (it.score ?: 0f) > (thresholdMapping[it.unitId] ?: 0f)
+            }
         }
 
     private fun runInference(
