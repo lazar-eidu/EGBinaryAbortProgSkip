@@ -73,8 +73,4 @@ class Implementation : PersonalizationPlugin {
             else min(input.learningHistory.size - 1, InputProcessor.HISTORY_LENGTH - 1)
         return outputProcessor.fromTensorflowOutput(input, tensorflowOutput[0][outputIndex])
     }
-
-    companion object {
-        private const val PROBABILITY_OF_SUCCESS_THRESHOLD = 0.9f
-    }
 }
