@@ -10,7 +10,7 @@ import org.junit.Test
 
 class ExpectedGainPersonalizationPluginTest {
 
-    private val plugin = Implementation()
+    private val plugin = PluginImplementation()
     private val contentIdMapping = ContentIdMapping.readContentIdMapping().associateBy { it.contentId }
 
     @Test

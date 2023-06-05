@@ -8,7 +8,7 @@ import com.eidu.personalization.api.UnitResult
 import com.eidu.personalization.api.UnitResultType
 import kotlin.math.min
 
-class Implementation : PersonalizationPlugin {
+class PluginImplementation : PersonalizationPlugin {
     private val modelFile = "dkt_model_230504.tflite"
     private val contentIdMapping = ContentIdMapping.readContentIdMapping()
     private val inputProcessor = InputProcessor(contentIdMapping)

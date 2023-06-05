@@ -10,8 +10,8 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Test
 
-class ImplementationTest {
-    private val plugin = Implementation()
+class PluginImplementationTest {
+    private val plugin = PluginImplementation()
     private val tensorflowInferenceRunnerMock: TensorflowInferenceRunner = mockk() {
         justRun { infer(any(), any(), any()) }
     }
