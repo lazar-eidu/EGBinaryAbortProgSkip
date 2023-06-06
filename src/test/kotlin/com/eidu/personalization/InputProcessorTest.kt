@@ -53,12 +53,12 @@ class InputProcessorTest {
         val modelInput = processor.toTensorflowInput(PersonalizationInput(history, availableUnits))
 
         val expectedFirstRow = FloatArray(contentIdMapping.size + 1)
-        expectedFirstRow[0] = 1f
+        expectedFirstRow[1] = 1f
         expectedFirstRow[contentIdMapping.size] = 1f
         assertThat(modelInput[0][0]).isEqualTo(expectedFirstRow)
 
         val expectedSecondRow = FloatArray(contentIdMapping.size + 1)
-        expectedSecondRow[0] = 1f
+        expectedSecondRow[1] = 1f
         expectedSecondRow[contentIdMapping.size] = 0f
         assertThat(modelInput[0][1]).isEqualTo(expectedSecondRow)
 
@@ -89,14 +89,14 @@ class InputProcessorTest {
         val modelInput = processor.toTensorflowInput(PersonalizationInput(history, availableUnits))
 
         val expectedFirstRow = FloatArray(contentIdMapping.size + 1)
-        expectedFirstRow[0] = 1f
+        expectedFirstRow[1] = 1f
         expectedFirstRow[contentIdMapping.size] = 1f
         assertThat(modelInput[0].slice(0..InputProcessor.HISTORY_LENGTH - 1 step 2)).each {
             it.isEqualTo(expectedFirstRow)
         }
 
         val expectedSecondRow = FloatArray(contentIdMapping.size + 1)
-        expectedSecondRow[0] = 1f
+        expectedSecondRow[1] = 1f
         expectedSecondRow[contentIdMapping.size] = 0f
         assertThat(modelInput[0].slice(1..InputProcessor.HISTORY_LENGTH - 1 step 2)).each {
             it.isEqualTo(expectedSecondRow)

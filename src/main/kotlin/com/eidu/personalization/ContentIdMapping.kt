@@ -6,7 +6,7 @@ import java.lang.Exception
 data class ContentIdMapping(val index: Int, val contentId: String, val threshold: Float) {
     companion object {
         fun readContentIdMapping(): List<ContentIdMapping> =
-            getSimpleCsvFromResource("/content_id_lookup_v1.0.1.csv").map {
+            getSimpleCsvFromResource("/content_id_lookup_v1.0.3.csv").map {
                 require(it.size == 3) { "Invalid row: $it" }
 
                 try {
