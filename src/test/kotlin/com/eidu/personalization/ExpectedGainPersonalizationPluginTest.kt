@@ -63,10 +63,12 @@ class ExpectedGainPersonalizationPluginTest {
     }
 
     private fun `given plugin probability values`(output: Any, vararg scores: Pair<String, Float>) {
-        @Suppress("UNCHECKED_CAST") val outputArray = output as Array<Array<FloatArray>>
-        scores.forEach { (contentId, score) ->
-            val outputIndex = contentIdMapping[contentId]?.index ?: error("No Mapping")
-            outputArray[0][0][outputIndex] = score
+        @Suppress("UNCHECKED_CAST") val outputArray = output as Array<FloatArray>
+        outputArray.forEach {
+            scores.forEach { (contentId, score) ->
+                val outputIndex = contentIdMapping[contentId]?.index ?: error("No Mapping")
+                it[outputIndex] = score
+            }
         }
     }
 

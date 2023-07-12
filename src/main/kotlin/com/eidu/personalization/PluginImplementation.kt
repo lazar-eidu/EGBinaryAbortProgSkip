@@ -6,7 +6,6 @@ import com.eidu.personalization.api.PersonalizationPlugin
 import com.eidu.personalization.api.TensorflowInferenceRunner
 import com.eidu.personalization.api.UnitResult
 import com.eidu.personalization.api.UnitResultType
-import kotlin.math.min
 
 class PluginImplementation : PersonalizationPlugin {
     private val modelFile = "dkt230712_base_tail.tflite"
@@ -23,26 +22,16 @@ class PluginImplementation : PersonalizationPlugin {
             input.learningHistory,
             filterAvailableUnits(input)
         )
-        val initialInference = runInference(sanitizedInput, runTensorflowInference)
 
-        val filteredInference = initialInference.filter {
-            it.value < (thresholdMapping[it.key] ?: 1f)
-        }
+        val initialTensorflowInput = inputProcessor.toInitialTensorflowInput(sanitizedInput)
+        val initialInference = getInitialInference(runTensorflowInference, initialTensorflowInput, sanitizedInput)
 
-        if (filteredInference.isEmpty()) return PersonalizationOutput(
-            listOf(),
-            filteredInference
+        val filteredInference = initialInference.filter { it.value < (thresholdMapping[it.key] ?: 1f) }
+        if (filteredInference.isEmpty()) return PersonalizationOutput(listOf(), filteredInference)
+
+        val simulatedInferences = getSimulatedInferences(
+            initialTensorflowInput, initialInference, sanitizedInput, runTensorflowInference
         )
-        val simulatedInferences = initialInference.keys.map { contentId ->
-            val simulatedHistory =
-                sanitizedInput.learningHistory + UnitResult(contentId, UnitResultType.Success, 0L, null)
-            val simulatedInput = PersonalizationInput(simulatedHistory, sanitizedInput.availableUnits - contentId)
-            val simulatedOutput = runInference(simulatedInput, runTensorflowInference)
-            val simulatedGain =
-                (initialInference[contentId] ?: 0.0f) * simulatedOutput.values.sum()
-            contentId to simulatedGain
-        }
-
         val maxGain = simulatedInferences.maxByOrNull { it.second }
 
         return PersonalizationOutput(
@@ -51,26 +40,74 @@ class PluginImplementation : PersonalizationPlugin {
         )
     }
 
+    private fun getSimulatedInferences(
+        initialTensorflowInput: Array<FloatArray>,
+        initialInference: Map<String, Float>,
+        sanitizedInput: PersonalizationInput,
+        runTensorflowInference: TensorflowInferenceRunner
+    ): List<Pair<String, Float>> {
+
+        val simulatedTails = initialInference.keys.map { contentId ->
+            val simulatedTail = UnitResult(contentId, UnitResultType.Success, 0L, initialInference[contentId])
+            simulatedTail
+        }
+
+        val simulatedTensorflowOutput: Array<FloatArray> =
+            getSimulatedTensorflowOutput(
+                initialTensorflowInput, simulatedTails, runTensorflowInference
+            ).sliceArray(
+                InputProcessor.HISTORY_LENGTH - 1 until InputProcessor.HISTORY_LENGTH - 1 + simulatedTails.size
+            )
+
+        val simulatedOutputs = simulatedTensorflowOutput.zip(simulatedTails).map { (output, tail) ->
+            outputProcessor.fromTensorflowOutput(sanitizedInput.availableUnits - tail.unitId, output)
+        }
+
+        val simulatedInferences = initialInference.keys.zip(simulatedOutputs).map { (contentId, output) ->
+            contentId to (initialInference[contentId] ?: 0.0f)*output.values.sum()
+        }
+
+        return simulatedInferences
+    }
+    private fun getSimulatedTensorflowOutput(
+        initialTensorflowInput: Array<FloatArray>,
+        simulatedTails: List<UnitResult>,
+        runTensorflowInference: TensorflowInferenceRunner
+    ): Array<FloatArray> {
+
+        val tensorflowInputBase = initialTensorflowInput.sliceArray(1 until InputProcessor.HISTORY_LENGTH)
+        val simulatedTensorflowInput = inputProcessor.toSimulatedTensorflowInput(tensorflowInputBase, simulatedTails)
+        val simulatedTensorflowOutput = Array(InputProcessor.INPUT_LENGTH - InputProcessor.HISTORY_LENGTH + 1) {
+            FloatArray(contentIdMapping.size)
+        }
+
+        runTensorflowInference.infer(modelFile, simulatedTensorflowInput, simulatedTensorflowOutput)
+
+        return simulatedTensorflowOutput
+    }
+
     private fun filterAvailableUnits(input: PersonalizationInput) =
         input.availableUnits.filter { unit ->
             !input.learningHistory.any {
                 it.unitId == unit &&
-                    it.resultType == UnitResultType.Success &&
-                    (it.score ?: 0f) > (thresholdMapping[it.unitId] ?: 0f)
+                        it.resultType == UnitResultType.Success &&
+                        (it.score ?: 0f) > (thresholdMapping[it.unitId] ?: 0f)
             }
         }
 
-    private fun runInference(
-        input: PersonalizationInput,
-        runTensorflowInference: TensorflowInferenceRunner
+    private fun getInitialInference(
+        runTensorflowInference: TensorflowInferenceRunner,
+        initialTensorflowInput: Array<FloatArray>,
+        sanitizedInput: PersonalizationInput
     ): Map<String, Float> {
-        val tensorflowInput = inputProcessor.toTensorflowInput(input)
-        val tensorflowOutput =
-            arrayOf(Array(InputProcessor.HISTORY_LENGTH) { FloatArray(contentIdMapping.size) })
-        runTensorflowInference.infer(modelFile, tensorflowInput, tensorflowOutput)
-        val outputIndex =
-            if (input.learningHistory.size == 0) 0
-            else min(input.learningHistory.size - 1, InputProcessor.HISTORY_LENGTH - 1)
-        return outputProcessor.fromTensorflowOutput(input, tensorflowOutput[0][outputIndex])
+        val initialTensorflowOutput = Array(InputProcessor.INPUT_LENGTH - InputProcessor.HISTORY_LENGTH + 1) {
+            FloatArray(contentIdMapping.size)
+        }
+        runTensorflowInference.infer(modelFile, initialTensorflowInput, initialTensorflowOutput)
+
+        val initialInference = outputProcessor.fromTensorflowOutput(
+            sanitizedInput.availableUnits, initialTensorflowOutput[InputProcessor.HISTORY_LENGTH - 1]
+        )
+        return initialInference
     }
 }
