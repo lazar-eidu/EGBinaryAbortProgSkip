@@ -64,7 +64,7 @@ class PluginImplementation : PersonalizationPlugin {
         }
 
         val simulatedInferences = initialInference.keys.zip(simulatedOutputs).map { (contentId, output) ->
-            contentId to (initialInference[contentId] ?: 0.0f)*output.values.sum()
+            contentId to (initialInference[contentId] ?: 0.0f) * output.values.sum()
         }
 
         return simulatedInferences
@@ -90,8 +90,8 @@ class PluginImplementation : PersonalizationPlugin {
         input.availableUnits.filter { unit ->
             !input.learningHistory.any {
                 it.unitId == unit &&
-                        it.resultType == UnitResultType.Success &&
-                        (it.score ?: 0f) > (thresholdMapping[it.unitId] ?: 0f)
+                    it.resultType == UnitResultType.Success &&
+                    (it.score ?: 0f) > (thresholdMapping[it.unitId] ?: 0f)
             }
         }
 
