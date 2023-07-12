@@ -29,7 +29,11 @@ class PluginImplementationTest {
         ).matchesPredicate {
             it.nextUnits.contains(ACTUAL_UNIT_FROM_CSV)
         }
-        verify() { tensorflowInferenceRunnerMock.infer("dkt230601_6ff.tflite", any(), any()) }
+        verify() {
+            tensorflowInferenceRunnerMock.infer(
+                "dkt230712_base_tail.tflite", any(), any()
+            )
+        }
     }
 
     @Test
