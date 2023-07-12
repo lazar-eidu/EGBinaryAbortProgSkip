@@ -53,6 +53,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     testImplementation("io.mockk", "mockk", "1.12.4")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 }
 
 val gitVersion: groovy.lang.Closure<String> by extra
