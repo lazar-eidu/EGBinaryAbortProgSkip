@@ -8,7 +8,7 @@ import com.eidu.personalization.api.UnitResult
 import com.eidu.personalization.api.UnitResultType
 
 class PluginImplementation : PersonalizationPlugin {
-    private val modelFile = "dkt230712_base_tail.tflite"
+    private val modelFile = "dkt230712_base_tail_v1.tflite"
     private val contentIdMapping = ContentIdMapping.readContentIdMapping()
     private val inputProcessor = InputProcessor(contentIdMapping)
     private val outputProcessor = OutputProcessor(contentIdMapping)
