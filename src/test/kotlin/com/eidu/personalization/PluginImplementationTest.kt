@@ -31,7 +31,8 @@ class PluginImplementationTest {
         }
         verify() {
             tensorflowInferenceRunnerMock.infer(
-                "dkt230712_base_tail_v1.tflite", any(), any()
+                PluginConfig.config.modelPath, any(), any()
+//                "dkt230712_base_tail_v1.tflite", any(), any()
             )
         }
     }
