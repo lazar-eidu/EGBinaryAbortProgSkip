@@ -1,8 +1,7 @@
 package com.eidu.personalization
-import assertk.assertions.isEqualTo
+import assertk.assertThat
 import assertk.assertions.isTrue
 import org.junit.Test
-import assertk.assertThat
 import java.nio.file.Files
 import java.nio.file.Paths
 
