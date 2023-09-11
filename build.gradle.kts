@@ -17,11 +17,13 @@ buildscript {
 
 plugins {
     kotlin("jvm") version "1.7.0"
+//    kotlin("plugin.serialization") version Versions.kotlin
     id("java-library")
     id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
     id("com.palantir.git-version") version "0.15.0"
     id("com.github.johnrengelman.shadow").version("7.1.2")
     id("io.github.http-builder-ng.http-plugin") version "0.1.1"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.6.21"
 }
 
 repositories {
@@ -49,11 +51,13 @@ dependencies {
     // Normally, compileOnly would be enough, because we don't need to package this library in our JAR. However,
     // that would cause Proguard to remove some references to the classes it can't find.
     implementation("com.eidu:personalization-plugin-interface:1.1.0")
+    // KotlinX Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.5.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("io.mockk", "mockk", "1.12.4")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 }
 
 val gitVersion: groovy.lang.Closure<String> by extra

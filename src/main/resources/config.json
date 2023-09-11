@@ -1,0 +1,4 @@
+{
+  "contentMappingPath": "/content_id_lookup_v1.0.3.csv",
+  "modelPath": "dkt230712_base_tail_v1.tflite"
+}
