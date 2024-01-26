@@ -38,13 +38,13 @@ class InputProcessorTest {
         val availableUnits = listOf<String>()
         val history = listOf(
             UnitResult(
-                "Anton:/../c-mat-1-us/topic-01-numbers-and-counting/block-01-review-counting-1-to-10/level-02",
+                "Eidu:052a4fcf-c1ea-4ce5-8c86-31f37a90d72d/CardBox4",
                 UnitResultType.Success,
                 0,
                 1.0F
             ),
             UnitResult(
-                "Anton:/../c-mat-1-us/topic-01-numbers-and-counting/block-01-review-counting-1-to-10/level-02",
+                "Eidu:052a4fcf-c1ea-4ce5-8c86-31f37a90d72d/CardBox4",
                 UnitResultType.Abort,
                 10,
                 0.5F
@@ -86,13 +86,13 @@ class InputProcessorTest {
         val availableUnits = listOf<String>()
         val subHistory = listOf(
             UnitResult(
-                "Anton:/../c-mat-1-us/topic-01-numbers-and-counting/block-01-review-counting-1-to-10/level-02",
+                "Eidu:052a4fcf-c1ea-4ce5-8c86-31f37a90d72d/CardBox4",
                 UnitResultType.Success,
                 0,
                 1.0F
             ),
             UnitResult(
-                "Anton:/../c-mat-1-us/topic-01-numbers-and-counting/block-01-review-counting-1-to-10/level-02",
+                "Eidu:052a4fcf-c1ea-4ce5-8c86-31f37a90d72d/CardBox4",
                 UnitResultType.Abort,
                 10,
                 0.5F

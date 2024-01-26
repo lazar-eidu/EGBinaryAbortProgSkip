@@ -47,13 +47,13 @@ class EGBinaryPluginServerTest {
 
     companion object {
         private const val FIRST_UNIT =
-            "Anton:/../c-mat-1-us/topic-01-numbers-and-counting/block-01-review-counting-1-to-10/level-02"
+            "Eidu:052a4fcf-c1ea-4ce5-8c86-31f37a90d72d/CardBox4"
         private const val SECOND_UNIT =
-            "Anton:/../c-mat-1-us/topic-01-numbers-and-counting/block-01-review-counting-1-to-10/level-03"
+            "Eidu:052a4fcf-c1ea-4ce5-8c86-31f37a90d72d/Cargo1"
         private const val THIRD_UNIT =
-            "Anton:/../c-mat-1-us/topic-01-numbers-and-counting/block-02-review-counting-1-to-20/level-01"
+            "Eidu:052a4fcf-c1ea-4ce5-8c86-31f37a90d72d/CargoExercise02"
         private const val FOURTH_UNIT =
-            "Anton:/../c-mat-1-us/topic-01-numbers-and-counting/block-02-review-counting-1-to-20/level-03"
+            "Eidu:052a4fcf-c1ea-4ce5-8c86-31f37a90d72d/CargoExercise03"
     }
 
     class ServerTensorflowInferenceRunner : TensorflowInferenceRunner {
