@@ -12,6 +12,7 @@ class PluginImplementation : PersonalizationPlugin {
     private val inputProcessor = InputProcessor(contentIdMapping)
     private val outputProcessor = OutputProcessor(contentIdMapping)
     private val thresholdMapping = contentIdMapping.associateBy({ it.contentId }) { it.threshold }
+    private val repeatCutoff: Int = 10
 
     override fun determineNextUnits(
         input: PersonalizationInput,
@@ -45,7 +46,7 @@ class PluginImplementation : PersonalizationPlugin {
 
     private fun filterAvailableUnits(input: PersonalizationInput) =
         input.availableUnits.filter { unit ->
-            !input.learningHistory.any {
+            !input.learningHistory.takeLast(repeatCutoff).any {
                 it.unitId == unit &&
                     it.resultType == UnitResultType.Success &&
                     (it.score ?: 0f) > (thresholdMapping[it.unitId] ?: 0f)
