@@ -1,4 +1,1 @@
-{
-  "contentMappingPath": "/content_id_lookup_v1.0.3.csv",
-  "modelPath": "dkt230712_base_tail_v1.tflite"
-}
+{"modelPath": "model_20240125_1117.tflite", "contentMappingPath": "/content_map.csv"}
