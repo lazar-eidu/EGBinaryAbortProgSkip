@@ -1,0 +1,53 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v-*.*.*'
+jobs:
+  Publish:
+    runs-on: ubuntu-22.04
+
+    env:
+      GITHUB_READPACKAGES_USER: ${{ secrets.GH_READPACKAGES_USER }}
+      GITHUB_READPACKAGES_TOKEN: ${{ secrets.GH_READPACKAGES_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+
+      - name: Build JAR
+        run: ./gradlew build
+
+      - name: Set project name variable
+        run: echo PROJECT_NAME=$(./gradlew properties | grep 'name:' | awk '{print $2}') >> $GITHUB_ENV
+
+      - name: Process version tag
+        uses: nowsprinting/check-version-format-action@v3
+        id: version
+        with:
+          prefix: 'v-'
+
+      - name: Get Presigned Upload URL from EIDU
+        uses: fjogeleit/http-request-action@v1
+        id: urlRequest
+        with:
+          url: https://api.eidu.com/content/get-plugin-submission-link?version=${{ steps.version.outputs.full_without_prefix }}&repository-url=${{ github.repositoryUrl }}&git-hash=${{ github.sha }}
+          method: GET
+          username: ${{ secrets.ACCOUNT_NAME }}
+          password: ${{ secrets.ACCOUNT_PASSWORD }}
+
+      - name: Upload Plugin
+        id: upload
+        run: |
+          echo "UPLOAD_RESPONSE_CODE=$(curl --write-out '%{http_code}' --silent -T build/libs/plugin.jar ${{ steps.urlRequest.outputs.response }} -H "x-amz-meta-name: ${{ secrets.ACCOUNT_NAME }}" -H "x-amz-meta-version: ${{ steps.version.outputs.full_without_prefix }}" -H "x-amz-meta-repository-url: ${{ github.repositoryUrl }}" -H "x-amz-meta-git-hash: ${{ github.sha }}" -H "Content-Type: application/jar")" >> $GITHUB_OUTPUT
+
+      - name: Check Upload Failures
+        if: steps.upload.outputs.UPLOAD_RESPONSE_CODE != '200'
+        run: |
+          echo "The release of your new plugin version failed on the server-side. Please try again later. If the error is not resolved, please contact the support"
+          exit 1
