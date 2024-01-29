@@ -11,12 +11,12 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.guardsquare:proguard-gradle:7.2.2")
+        classpath("com.guardsquare:proguard-gradle:7.4.1")
     }
 }
 
 plugins {
-    kotlin("jvm") version "1.7.0"
+    kotlin("jvm") version "1.9.21"
 //    kotlin("plugin.serialization") version Versions.kotlin
     id("java-library")
     id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
@@ -52,8 +52,8 @@ dependencies {
     // that would cause Proguard to remove some references to the classes it can't find.
     implementation("com.eidu:personalization-plugin-interface:1.1.0")
     // KotlinX Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.5.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("io.mockk", "mockk", "1.12.4")
