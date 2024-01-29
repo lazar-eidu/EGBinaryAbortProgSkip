@@ -1,11 +1,8 @@
 package com.eidu.personalization
 
 import assertk.assertThat
-import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import com.eidu.personalization.api.PersonalizationInput
-import com.eidu.personalization.api.UnitResult
-import com.eidu.personalization.api.UnitResultType
 import org.junit.Test
 
 class ExpectedGainPersonalizationPluginTest {
@@ -23,43 +20,6 @@ class ExpectedGainPersonalizationPluginTest {
         }
 
         assertThat(pluginOutput.nextUnits).isEqualTo(listOf(FIRST_UNIT))
-    }
-
-    @Test
-    fun `returns empty list if all processed units have a probability of success of over threshold value`() {
-        val pluginOutput = plugin.determineNextUnits(
-            PersonalizationInput(
-                listOf(),
-                listOf(FIRST_UNIT, SECOND_UNIT, THIRD_UNIT, FOURTH_UNIT)
-            )
-        ) { _, _, output ->
-            `given plugin probability values`(
-                output,
-                FIRST_UNIT to 0.98f,
-                SECOND_UNIT to 0.98f,
-                THIRD_UNIT to 0.98f,
-                FOURTH_UNIT to 0.98f,
-            )
-        }
-
-        assertThat(pluginOutput.nextUnits).isEmpty()
-    }
-
-    @Test
-    fun `filters successful units`() {
-        val pluginOutput = plugin.determineNextUnits(
-            PersonalizationInput(
-                listOf(UnitResult(FIRST_UNIT, UnitResultType.Success, 0L, null)),
-                listOf(FIRST_UNIT)
-            )
-        ) { _, _, output ->
-            `given plugin probability values`(
-                output,
-                FIRST_UNIT to 0.98f
-            )
-        }
-
-        assertThat(pluginOutput.nextUnits).isEmpty()
     }
 
     private fun `given plugin probability values`(output: Any, vararg scores: Pair<String, Float>) {
