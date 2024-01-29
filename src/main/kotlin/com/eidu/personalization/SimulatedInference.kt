@@ -29,7 +29,6 @@ class SimulatedInference(
         }
     }
 
-
     fun getSimulatedInferences(
         initialTensorflowInput: Array<FloatArray>, // The initial input for the TensorFlow model.
         initialInference: Map<String, Float>, // Map containing initial inference values by content ID.
@@ -53,7 +52,7 @@ class SimulatedInference(
         // because the first InputProcessor.HISTORY_LENGTH - 1 of outputs
         // are not used relevant to the simulation.
         val outputRange = InputProcessor.HISTORY_LENGTH - 1 until
-                InputProcessor.HISTORY_LENGTH - 1 + simulatedTails.size
+            InputProcessor.HISTORY_LENGTH - 1 + simulatedTails.size
 
         // Slices the TensorFlow output to obtain only the relevant values.
         val simulatedTensorflowOutput = getSimulatedTensorflowOutput(
@@ -86,7 +85,8 @@ class SimulatedInference(
         // pairing them as <ContentID, CombinedInferenceScore>.
         // Combine the outputs of success and abort into pairs
         val gains = successGains.zip(abortGains) {
-                success, abort -> success + abort
+            success, abort ->
+            success + abort
         }
 
         // Now, create the final list of inferences by combining content IDs with their corresponding combined output
@@ -113,5 +113,4 @@ class SimulatedInference(
 
         return simulatedTensorflowOutput
     }
-
 }
