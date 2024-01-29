@@ -18,6 +18,9 @@ class PluginImplementation : PersonalizationPlugin {
         input: PersonalizationInput,
         runTensorflowInference: TensorflowInferenceRunner
     ): PersonalizationOutput {
+
+        if (getProgress(input) > 0.95f) return PersonalizationOutput(listOf(), mapOf())
+
         val sanitizedInput = PersonalizationInput(
             input.learningHistory,
             filterAvailableUnits(input)
@@ -42,8 +45,6 @@ class PluginImplementation : PersonalizationPlugin {
         )
     }
 
-
-
     private fun filterAvailableUnits(input: PersonalizationInput) =
         input.availableUnits.filter { unit ->
             !input.learningHistory.takeLast(repeatCutoff).any {
@@ -67,5 +68,20 @@ class PluginImplementation : PersonalizationPlugin {
             sanitizedInput.availableUnits, initialTensorflowOutput[InputProcessor.HISTORY_LENGTH - 1]
         )
         return initialInference
+    }
+
+    fun getProgress(input: PersonalizationInput): Float {
+        val successfulUnits = input.learningHistory
+            .filter { histUnit ->
+                histUnit.resultType == UnitResultType.Success && (histUnit.score ?: 0f) > 0.05
+            }
+            .map { it.unitId }
+            .toSet()
+
+        val successCount = input.availableUnits.count { unitId ->
+            unitId in successfulUnits
+        }
+
+        return successCount.toFloat() / input.availableUnits.size.toFloat()
     }
 }
