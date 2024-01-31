@@ -32,7 +32,7 @@ repositories {
         name = "GitHubPackages"
         // TODO update with repository identifier
         // url = uri("https://maven.pkg.github.com/EIDU/personalization-plugin-starter")
-        url = uri("https://maven.pkg.github.com/lazar-eidu/EGBinaryAbort")
+        url = uri("https://maven.pkg.github.com/lazar-eidu/EGBinaryAbortProgSkip")
         credentials {
             username = System.getenv("GITHUB_READPACKAGES_USER")
                 ?: localProperties.getProperty("githubReadPackagesUser")
