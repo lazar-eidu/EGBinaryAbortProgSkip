@@ -8,7 +8,7 @@ import java.nio.file.Paths
 class PluginConfigTest {
     @Test
     fun `reads config from file`() {
-        val resourcesFolder = Paths.get("src/main/resources")
+        val resourcesFolder = Paths.get(PluginConfig.configPath).parent
         val config = PluginConfig.config
 
         val mappingPath = resourcesFolder.resolve(config.contentMappingPath.drop(1))
