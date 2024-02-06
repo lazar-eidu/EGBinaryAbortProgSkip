@@ -1,5 +1,6 @@
 package com.eidu.personalization.util
 
+import java.io.File
 import java.io.InputStream
 
 /**
@@ -18,3 +19,6 @@ fun Any.getSimpleCsvFromResource(path: String): Sequence<List<String>> = sequenc
 
 fun Any.getResourceAsStream(path: String): InputStream =
     requireNotNull(javaClass.getResourceAsStream(path)) { "Resource $path not found." }
+
+fun Any.getResourceAsFile(path: String): File =
+    File(requireNotNull(javaClass.getResource(path)?.toURI()) { "Resource $path not found." })

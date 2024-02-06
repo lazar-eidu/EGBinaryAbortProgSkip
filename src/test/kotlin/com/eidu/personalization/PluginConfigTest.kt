@@ -3,12 +3,11 @@ import assertk.assertThat
 import assertk.assertions.isTrue
 import org.junit.Test
 import java.nio.file.Files
-import java.nio.file.Paths
 
 class PluginConfigTest {
     @Test
     fun `reads config from file`() {
-        val resourcesFolder = Paths.get(PluginConfig.configPath).parent
+        val resourcesFolder = PluginConfig.configFile.parentFile.toPath()
         val config = PluginConfig.config
 
         val mappingPath = resourcesFolder.resolve(config.contentMappingPath.drop(1))
