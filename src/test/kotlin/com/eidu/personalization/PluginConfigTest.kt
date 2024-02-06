@@ -2,12 +2,13 @@ package com.eidu.personalization
 import assertk.assertThat
 import assertk.assertions.isTrue
 import org.junit.Test
+import java.io.File
 import java.nio.file.Files
 
 class PluginConfigTest {
     @Test
     fun `reads config from file`() {
-        val resourcesFolder = PluginConfig.configFile.parentFile.toPath()
+        val resourcesFolder = File("src/main/resources").toPath()
         val config = PluginConfig.config
 
         val mappingPath = resourcesFolder.resolve(config.contentMappingPath.drop(1))
